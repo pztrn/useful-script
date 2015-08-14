@@ -1,0 +1,7 @@
+# Configuration file for i3_detect_monitor script.
+
+# Monitor that should be used, if connected.
+MONITOR_TO_USE="DP1-1"
+
+# Laptop's monitor name.
+LED="eDP1"
