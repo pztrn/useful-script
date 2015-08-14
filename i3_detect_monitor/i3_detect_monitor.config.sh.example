@@ -5,3 +5,12 @@ MONITOR_TO_USE="DP1-1"
 
 # Laptop's monitor name.
 LED="eDP1"
+
+# Log file path
+LOGFILE=${HOME}/logs/i3_detect_monitor.log"
+
+# Sometimes XRandR might detect your resolution wrong.
+# Overwrite it here.
+# !!!NOTE!!! It may not work for you until you add your resolution
+# into X config!
+RESOLUTION_TO_SET="1920x1080"

@@ -2,7 +2,7 @@
 
 # Script Path.
 SCRIPT_PATH=$(dirname "`readlink -f "${BASH_SOURCE}"`")
-
+date > /data/TEMP/1.launch
 # Configuration.
 source "${SCRIPT_PATH}/i3_detect_monitor.config.sh"
 
@@ -14,14 +14,25 @@ function check_dependencies()
     # Actually, in "not found" case it will be 8. I just love
     # number 10.
     if [ ${#xrandr} -lt 10 ]; then
-        echo "XRandR not found! Install it with your package manager!"
+        echo "[`date`] XRandR not found! Install it with your package manager!" >> ${LOGFILE}
         exit 1
     fi
 }
 
+function check_log()
+{
+    if [ -f ${LOGFILE} ]; then
+        rm ${LOGFILE}
+    fi
+    
+    touch ${LOGFILE}
+}
+
 function get_monitor_information()
 {
-    resolution=`${xrandr} --current | grep ${MONITOR_TO_USE} -A1 | tail -n 1 | awk {' print $1 '}`
+    if [ -z ${RESOLUTION_TO_SET} ]; then
+        RESOLUTION_TO_SET=`${xrandr} --current | grep ${MONITOR_TO_USE} -A1 | tail -n 1 | awk {' print $1 '}`
+    fi
 }
 
 function get_X_display()
@@ -29,22 +40,23 @@ function get_X_display()
     if [ ! -z ${DISPLAY} ]; then
         dspl=${DISPLAY}
     else
-        echo "Running X session wasn't found. This script is useful only if X session is running."
+        echo "[`date`] Running X session wasn't found. This script is useful only if X session is running." >> ${LOGFILE}
         exit 2
     fi
 }
 
 function set_monitor_state()
 {
-    echo "Will use resolution '${resolution}' for monitor '${MONITOR_TO_USE}' on X display '${dspl}'. Monitor '${LED}' will be disabled."
-    echo "Setting resolution for '${MONITOR_TO_USE}'..."
-    ${xrandr} -d ${dspl} --output ${MONITOR_TO_USE} --mode ${resolution}
-    echo "Disabling output '${LED}'..."
+    echo "[`date`] Will use resolution '${RESOLUTION_TO_SET}' for monitor '${MONITOR_TO_USE}' on X display '${dspl}'. Monitor '${LED}' will be disabled." >> ${LOGFILE}
+    echo "[`date`]Setting resolution for '${MONITOR_TO_USE}'..." >> ${LOGFILE}
+    ${xrandr} -d ${dspl} --output ${MONITOR_TO_USE} --mode ${RESOLUTION_TO_SET}
+    echo "[`date`]Disabling output '${LED}'..." >> ${LOGFILE}
     ${xrandr} -d ${dspl} --output ${LED} --off
-    echo "Configuration complete"
+    echo "[`date`]Configuration complete" >> ${LOGFILE}
 }
 
 check_dependencies
+check_log
 get_monitor_information
 get_X_display
 set_monitor_state
