@@ -30,9 +30,9 @@ function check_log()
 
 function check_monitor_presence()
 {
-    xrandr --current | grep "${dspl}" &>/dev/null
+    xrandr --current | grep "${MONITOR_TO_USE}" &>/dev/null
     if [ $? -ne 0 ]; then
-        echo "Monitor '${dspl}' not connected" >> ${LOGFILE}
+        echo "Monitor '${MONITOR_TO_USE}' not connected" >> ${LOGFILE}
         exit 1
     fi
 }
@@ -47,7 +47,7 @@ function get_monitor_information()
 function get_X_display()
 {
     if [ ! -z ${DISPLAY} ]; then
-        dspl=${DISPLAY}
+        xdspl=${DISPLAY}
     else
         echo "[`date`] Running X session wasn't found. This script is useful only if X session is running." >> ${LOGFILE}
         exit 2
@@ -58,9 +58,9 @@ function set_monitor_state()
 {
     echo "[`date`] Will use resolution '${RESOLUTION_TO_SET}' for monitor '${MONITOR_TO_USE}' on X display '${dspl}'. Monitor '${LED}' will be disabled." >> ${LOGFILE}
     echo "[`date`]Setting resolution for '${MONITOR_TO_USE}'..." >> ${LOGFILE}
-    ${xrandr} -d ${dspl} --output ${MONITOR_TO_USE} --mode ${RESOLUTION_TO_SET}
+    ${xrandr} -d ${xdspl} --output ${MONITOR_TO_USE} --mode ${RESOLUTION_TO_SET}
     echo "[`date`]Disabling output '${LED}'..." >> ${LOGFILE}
-    ${xrandr} -d ${dspl} --output ${LED} --off
+    ${xrandr} -d ${xdspl} --output ${LED} --off
     echo "[`date`]Configuration complete" >> ${LOGFILE}
 }
 
