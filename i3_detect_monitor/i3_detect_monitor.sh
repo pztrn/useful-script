@@ -28,6 +28,15 @@ function check_log()
     touch ${LOGFILE}
 }
 
+function check_monitor_presence()
+{
+    xrandr --current | grep "${dspl}" &>/dev/null
+    if [ $? -ne 0 ]; then
+        echo "Monitor '${dspl}' not connected" >> ${LOGFILE}
+        exit 1
+    fi
+}
+
 function get_monitor_information()
 {
     if [ -z ${RESOLUTION_TO_SET} ]; then
@@ -57,6 +66,7 @@ function set_monitor_state()
 
 check_dependencies
 check_log
-get_monitor_information
 get_X_display
+check_monitor_presence
+get_monitor_information
 set_monitor_state
